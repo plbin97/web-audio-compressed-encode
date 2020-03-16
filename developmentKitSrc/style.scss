@@ -1,0 +1,39 @@
+.startButton {
+  height: 90%;
+  width: 20em;
+  margin: 0.2em;
+}
+.switchCompressorButton {
+  height: 90%;
+  width: 20em;
+  margin: 0.2em;
+}
+.mainButtonFrame {
+  display: flex;
+  justify-content: center;
+  width: 99%;
+  height: 5em;
+}
+.pcmOscilloscopeFrame {
+  display: flex;
+  width: 99%;
+  justify-content: center;
+}
+.pcmOscilloscope {
+  position: relative;
+  height: 10em;
+  width: 18em;
+  margin: 1em;
+  border: 0.1em #0f7ae5 solid;
+}
+
+.pcmOscilloscopeBox {
+  position: absolute;
+  width: 1%;
+  background: #0f7ae5;
+}
+
+.pageAlert {
+  padding-left: 30%;
+  padding-right: 30%;
+}
