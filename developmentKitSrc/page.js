@@ -3,7 +3,6 @@ import Audio from "./audio";
 import setAlert from "./setAlert";
 import PcmOscilloscope from "./pcmOscilloscope";
 import {encoder, decoder} from "../compressorSrc";
-import Worker from './compressor.worker.js';
 
 import compressorTesting from "./compressorTesting";
 
@@ -19,7 +18,6 @@ let audio;
 let pcmOscilloscopeOrigin;
 let pcmOscilloscopeCompressor;
 
-let compressorWorker;
 
 /**
  * Run after the page loaded
@@ -80,7 +78,6 @@ let testSwitchOnclick = async () => {
         testStarted = false;
     } else {
         audio = new Audio();
-        compressorWorker = new Worker();
         setAlert(2, "Please allow this website to use your microphone");
         await loadStuffsToWindowWhileClickingStart();
         if (!await audio.webAudioRecordInitialize()) {
@@ -89,11 +86,6 @@ let testSwitchOnclick = async () => {
         }
         setAlert(1, "You are good to make some voice");
 
-        compressorWorker.onmessage = async (event) => {
-            pcmOscilloscopeCompressor.addSoundElement(newAudioBuffer.getChannelData(0));
-            pcmOscilloscopeCompressor.renderToElement();
-            await audio.playPCM(event.data);
-        };
 
         await audio.PCMRecordHandler(onPcmHandler);
         testSwitch.innerText = "Stop";
@@ -105,12 +97,11 @@ let onPcmHandler = async (audioBuffer) => {
     pcmOscilloscopeOrigin.addSoundElement(audioBuffer.getChannelData(0));
     pcmOscilloscopeOrigin.renderToElement();
     if (compressorEnabled) {
-        compressorWorker.postMessage(audioBuffer);
-        // let blob = await encoder(audioBuffer);
-        // let newAudioBuffer = await decoder(blob);
-        // pcmOscilloscopeCompressor.addSoundElement(newAudioBuffer.getChannelData(0));
-        // pcmOscilloscopeCompressor.renderToElement();
-        // await audio.playPCM(newAudioBuffer);
+        let blob = await encoder(audioBuffer);
+        let newAudioBuffer = await decoder(blob);
+        pcmOscilloscopeCompressor.addSoundElement(newAudioBuffer.getChannelData(0));
+        pcmOscilloscopeCompressor.renderToElement();
+        await audio.playPCM(newAudioBuffer);
     } else {
         await audio.playPCM(audioBuffer);
     }
