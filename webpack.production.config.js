@@ -3,7 +3,7 @@ let yourProductionFileName = require('./config').yourProductionFileName;
 
 module.exports = {
     mode: "production",
-    entry: ['babel-polyfill', './compressorSrc/index.js'],  // Entry file
+    entry: ['babel-polyfill', './compressor/index.js'],  // Entry file
 
     output: {
         path: path.resolve(__dirname, "dist"),

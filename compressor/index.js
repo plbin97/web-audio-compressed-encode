@@ -12,6 +12,7 @@ import createAudioBufferByArrayBuffer from "../lib/createAudioBufferByArrayBuffe
 let encoder = async (audioBuffer) => {
     let arrayBuffer = audioBuffer.getChannelData(0);
     // Put your code here
+    // Apply Muti-worker if you can
 
     let newBlob = new Blob([arrayBuffer]);
     // You have to return a blob object in the encoder
@@ -26,6 +27,7 @@ let encoder = async (audioBuffer) => {
 let decoder = async (blob) => {
     let array = await blob.arrayBuffer();
     // Put your code here
+    // Apply muti-worker if you can
 
 
     // You have to transfer your PCM data to Float32Array

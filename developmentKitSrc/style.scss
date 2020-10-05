@@ -19,6 +19,11 @@
   width: 99%;
   justify-content: center;
 }
+.compressionRateFrame {
+  display: flex;
+  width: 99%;
+  justify-content: center;
+}
 .pcmOscilloscope {
   position: relative;
   height: 10em;
@@ -36,4 +41,20 @@
 .pageAlert {
   padding-left: 30%;
   padding-right: 30%;
+}
+.compressionRate {
+  position: relative;
+  display: flex;
+  width: 25em;
+  padding: 1em;
+
+}
+.compressionRateTitle {
+  margin: 0.3em;
+  width: 10em;
+  border-bottom: #0e6dcd solid;
+}
+.compressionRateNumber {
+  margin: 0.3em;
+  padding-left: 3em;
 }

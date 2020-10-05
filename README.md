@@ -15,8 +15,12 @@ You can develop and test your compressor here
 
 ## Instruction
 * Run `npm install` first, then run `npm start`. 
-* Your Compressor source code should be located in `/compressorSrc/` directory. 
-* In `/compressorSrc/index.js`, you suppose to export a encoder and a decoder function. 
+* Your Compressor source code should be located in `/compressor/` directory. 
+* In `/compressor/index.js`, you suppose to export a encoder and a decoder function. 
+    * Encoder and decoder function used for handling small pieces of PCM data from web audio API
+    * For encoder function,you would be given an audio buffer in parameter, and you suppose to return a blob data as a small data package. 
+    * decoder function is the reverse version of encoder function. 
+    * Do your best to distribute your algorithm among different workers for better performance. 
     * For more details, just look at that file. 
 
 * After you start the SDK

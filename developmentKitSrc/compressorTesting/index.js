@@ -1,4 +1,4 @@
-import {encoder, decoder} from "../../compressorSrc";
+import {encoder, decoder} from "../../compressor";
 import Timer from "../timer";
 import setAlert from "../setAlert";
 import sampleAudioBufferGenerator from "./sampleAudioBufferGenerator";

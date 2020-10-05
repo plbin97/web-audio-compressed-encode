@@ -1,5 +1,4 @@
-import setAlert from "../setAlert";
-let bufferSize = require('../../config');
+import {bufferSize} from "../../config";
 
 class Audio {
 

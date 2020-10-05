@@ -2,7 +2,9 @@ import loadStuffsToWindowWhileClickingStart from "./loadStuffsToWindowWhileClick
 import Audio from "./audio";
 import setAlert from "./setAlert";
 import PcmOscilloscope from "./pcmOscilloscope";
-import {encoder, decoder} from "../compressorSrc";
+import {encoder, decoder} from "../compressor";
+import {bufferSize, oscilloscopeDisplayDefault} from "../config";
+
 
 import compressorTesting from "./compressorTesting";
 
@@ -10,14 +12,17 @@ let refreshButton = document.getElementById("refreshButton");
 let compressorSwitch = document.getElementById("compressorSwitch");
 let testSwitch = document.getElementById("testingSwitch");
 let waveAmplifierRange = document.getElementById("waveAmplifierRange");
+let oscilloscopeDisplaySwitch = document.getElementById("oscilloscopeDisplaySwitch");
+let compressionRateDisplay = document.getElementById("compressionRateNumber");
 
 let compressorTestingFinished = false;
 let testStarted = false;
 let compressorEnabled = false;
+let pcmDisplaySwitch = oscilloscopeDisplayDefault;
 let audio;
 let pcmOscilloscopeOrigin;
 let pcmOscilloscopeCompressor;
-
+let compressionRate = 0;
 
 /**
  * Run after the page loaded
@@ -30,9 +35,15 @@ let page = async () => {
     testSwitch.onclick = testSwitchOnclick;
     compressorSwitch.onclick = compressorSwitchOnClick;
     setAlert(3,"Testing your compressor's code, please wait");
+    oscilloscopeDisplaySwitch.onclick = oscilloscopeSwitchOnclick;
     pcmOscilloscopeCompressor = new PcmOscilloscope(document.getElementById("pcmOscilloscopeCompressor"));
     pcmOscilloscopeOrigin = new PcmOscilloscope(document.getElementById("pcmOscilloscopeOrigin"));
     waveAmplifierRange.onmousemove = waveAmplifierRangeMove;
+
+    setInterval(() => {
+        compressionRateDisplay.innerText = (Math.round(compressionRate * 10000000) / 10000000).toString();
+    },1000)
+
     setTimeout(() => {
         // Testing Time out
         if (!compressorTestingFinished) {
@@ -42,6 +53,7 @@ let page = async () => {
     if (await compressorTesting()) {
         testSwitch.disabled = false;
     }
+
     compressorTestingFinished = true;
 };
 
@@ -52,6 +64,17 @@ let waveAmplifierRangeMove = () => {
     pcmOscilloscopeOrigin.changeAmplifier(Number(waveAmplifierRange.value));
     pcmOscilloscopeCompressor.changeAmplifier(Number(waveAmplifierRange.value));
 };
+
+/**
+ * Event when clicking the Oscilloscope Display switch
+ */
+let oscilloscopeSwitchOnclick = () => {
+    pcmDisplaySwitch = !pcmDisplaySwitch;
+    pcmOscilloscopeOrigin.clean();
+    pcmOscilloscopeOrigin.renderToElement();
+    pcmOscilloscopeCompressor.clean();
+    pcmOscilloscopeCompressor.renderToElement();
+}
 
 /**
  * Event After clicking on compressor switch
@@ -94,13 +117,19 @@ let testSwitchOnclick = async () => {
 };
 
 let onPcmHandler = async (audioBuffer) => {
-    pcmOscilloscopeOrigin.addSoundElement(audioBuffer.getChannelData(0));
-    pcmOscilloscopeOrigin.renderToElement();
+    if (pcmDisplaySwitch) {
+        pcmOscilloscopeOrigin.addSoundElement(audioBuffer.getChannelData(0));
+        pcmOscilloscopeOrigin.renderToElement();
+    }
     if (compressorEnabled) {
         let blob = await encoder(audioBuffer);
         let newAudioBuffer = await decoder(blob);
-        pcmOscilloscopeCompressor.addSoundElement(newAudioBuffer.getChannelData(0));
-        pcmOscilloscopeCompressor.renderToElement();
+        let blobSize = blob.size;
+        compressionRate = blobSize / (bufferSize * 4);
+        if (pcmDisplaySwitch) {
+            pcmOscilloscopeCompressor.addSoundElement(newAudioBuffer.getChannelData(0));
+            pcmOscilloscopeCompressor.renderToElement();
+        }
         await audio.playPCM(newAudioBuffer);
     } else {
         await audio.playPCM(audioBuffer);
