@@ -1,4 +1,5 @@
 import createAudioBufferByArrayBuffer from "../lib/createAudioBufferByArrayBuffer";
+import {audioEncode, audioDecode} from "./workerComunicator";
 /**
  * There is a library you can use: createAudioBufferByArrayBuffer
  */
@@ -11,11 +12,7 @@ import createAudioBufferByArrayBuffer from "../lib/createAudioBufferByArrayBuffe
  */
 let encoder = async (audioBuffer) => {
     let arrayBuffer = audioBuffer.getChannelData(0);
-    // Put your code here
-    // Apply Muti-worker if you can
-
-    let newBlob = new Blob([arrayBuffer]);
-    // You have to return a blob object in the encoder
+    let newBlob = await audioEncode(arrayBuffer);
     return newBlob;
 };
 
@@ -25,14 +22,10 @@ let encoder = async (audioBuffer) => {
  * @returns {Promise<AudioBuffer>}
  */
 let decoder = async (blob) => {
-    let array = await blob.arrayBuffer();
-    // Put your code here
-    // Apply muti-worker if you can
 
+    let floatArr = await audioDecode(blob);
 
-    // You have to transfer your PCM data to Float32Array
-    let floatArr = new Float32Array(array);
-    let audioBuffer = createAudioBufferByArrayBuffer(floatArr);
+    let audioBuffer = createAudioBufferByArrayBuffer(floatArr, 22050);
     // You have to return an audioBuffer object in the decoder
     return audioBuffer;
 };
