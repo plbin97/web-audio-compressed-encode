@@ -13,7 +13,11 @@ class Audio {
      */
     async webAudioRecordInitialize() {
         let mediaStream = await window.navigator.mediaDevices.getUserMedia({
-            audio: true
+            audio: {
+                noiseSuppression: true,
+                echoCancellation: true,
+                autoGainControl: true
+            }
         }).catch(err => {
             console.log(err);
         });

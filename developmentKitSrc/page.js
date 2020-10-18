@@ -116,6 +116,8 @@ let testSwitchOnclick = async () => {
     }
 };
 
+let playing = false;
+
 let onPcmHandler = async (audioBuffer) => {
     if (pcmDisplaySwitch) {
         pcmOscilloscopeOrigin.addSoundElement(audioBuffer.getChannelData(0));
@@ -130,9 +132,15 @@ let onPcmHandler = async (audioBuffer) => {
             pcmOscilloscopeCompressor.addSoundElement(newAudioBuffer.getChannelData(0));
             pcmOscilloscopeCompressor.renderToElement();
         }
+
         await audio.playPCM(newAudioBuffer);
     } else {
+        if (playing) {
+            console.log("playing");
+        }
+        playing = true;
         await audio.playPCM(audioBuffer);
+        playing = false;
     }
 };
 
